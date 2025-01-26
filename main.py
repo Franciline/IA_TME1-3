@@ -1,12 +1,18 @@
-import exemple  # Pour pouvoir utiliser les methodes de exemple.py
-
+#import exemple  # Pour pouvoir utiliser les methodes de exemple.py
 # Q1
-from gale_shapley import gale_shapley_etud
-
+from gale_shapley import gale_shapley_etud, gale_shapley_parc
 
 def matriceCE(fichier: str) -> list:
     """
-    matrice de preference pour les étudiants
+    Matrice de préférences des étudiants pour les parcours à partir d'un fichier txt.
+
+    Parameters
+    ----------
+        fichier : fichier txt à lire
+    Returns
+    -------
+        list[list[int]] : matrice de taille nb étudiant x nb de parcours, une sous-liste list[i] représente
+                        les préférences de l'étudiant i par ordre croissant
     """
 
     monFichier = open(fichier, "r")     # Ouverture en lecture. Indentation par rapport a la ligne d'avant (<-> bloc).
@@ -21,7 +27,15 @@ def matriceCE(fichier: str) -> list:
 
 def matriceCP(fichier: str) -> list:
     """
-    matrice de préférence des parcours
+    Matrice de préférences des parcours pour les étudiants à partir d'un fichier txt.
+
+    Parameters
+    ----------
+        fichier : fichier txt à lire
+    Returns
+    -------
+        list[list[int]] : matrice de taille nb de parcours x nb étudiant, une sous-liste list[i] représente
+                        les préférences du parcours i par ordre croissant
     """
     monFichier = open(fichier, "r")     # Ouverture en lecture. Indentation par rapport a la ligne d'avant (<-> bloc).
     contenu = monFichier.readlines()    # Contenu contient une liste de chainces de caracteres, chaque chaine correspond a une ligne
@@ -37,8 +51,5 @@ def matriceCP(fichier: str) -> list:
 if __name__ == '__main__':
     matCEtu = matriceCE("PrefEtu.txt")
     cap, matCParc = matriceCP("PrefSpe.txt")
-    print(cap)
-    # for i in range(len(matCParc)):
-    # print(matCParc[i])
-    # print(matCEtu, "aaah \n", matCParc)
-    print(gale_shapley_etud(matCEtu, matCParc, cap))
+    print("Etudiant optimal : ",gale_shapley_etud(matCEtu, matCParc, cap))
+    print("Parcours optimal : ",gale_shapley_parc(matCEtu, matCParc, cap))
