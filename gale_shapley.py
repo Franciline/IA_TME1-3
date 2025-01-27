@@ -1,6 +1,5 @@
 import heapq
 from collections import deque
-from itertools import product
 
 
 def gale_shapley_etud(pref_etud: list[list[int]], pref_parc: list[list[int]], capacites: list[int]) -> list[list[int]]:
@@ -35,7 +34,6 @@ def gale_shapley_etud(pref_etud: list[list[int]], pref_parc: list[list[int]], ca
         # print([[stud for _, stud in affect] for affect in parc_affect])
         etudiant = etud_libre.pop()  # dernier etudiant
         parcours = pref_etud[etudiant][etud_parc[etudiant]]   # parcours choisi par lui
-
         etud_parc[etudiant] += 1     # prochain parcours à proposer
 
         if parcours == len(pref_parc):  # étudiant a proposé a toutes les parcours
@@ -113,24 +111,59 @@ def gale_shapley_parc(pref_etud: list[list[int]], pref_parc: list[list[int]], ca
     return [[numEt for numEt in range(len(etud_affect)) if etud_affect[numEt][0] == numParc] for numParc in range(len(pref_parc))]
 
 
+def _get_avant(lst: list[int], val: int, exclus: set[int] = None) -> set[int]:
+    """
+    Trouver tous les éléments dans une list 'lst' qui se trouvent avant l'élément val.
+    Ainsi, les éléments qui se trouvent dans l'exclus ne sont pas ajoutés.  
+    Hypothèse : tous les éléments de 'lst' sont différents
+
+    Parameters
+    ----------
+        lst : list[int]
+        val: int
+        exclus: set[int]
+
+    Returns
+    -------
+    """
+    res = set()
+    for elem in lst:
+        if val == elem:
+            break
+        if (exclus is None) or (elem not in exclus):
+            res.add(elem)
+    return res
+
+
 def get_instable(pref_etud: list[list[int]], pref_parc: list[list[int]], affect_parc: list[list[int]]) -> list[list[int]]:
     """
     Trouver les paires instables.
+
+    Parameters
+    ----------
+        pref_etud : list[list[int]]
+            Matrice des préférences des étudiants.
+        pref_parc : list[list[int]]
+            Matrice des préférences des parcours de l'université.
+        affect_parc : list[list[int]] 
+            Une liste des affectations des étudiants aux parcours. La liste à l'indice i représente l'affectation au parcours i.
     """
+
     pref_des_etud = [set() for _ in range(len(pref_etud))]
     pref_des_parc = [set() for _ in range(len(pref_parc))]
 
-    instables = set()
+    instables = set()  # Un ensemble des paires (parcours, etudiant) unstable
     for parc, affect in enumerate(affect_parc):
         for etud in affect:
-            pref_du_parc = set(pref_parc[parc][:pref_parc[parc].index(etud)]) - set(affect_parc[parc])
-            pref_du_etud = set(pref_etud[etud][:pref_etud[etud].index(parc)])
-            pref_des_etud[etud] = pref_du_etud
-            pref_des_parc[parc] = pref_du_parc
+            # Les etudiants plus préférés par des parcours que ceux ont été affectés
+            pref_des_parc[parc] = _get_avant(pref_parc[parc], etud, set(affect_parc[parc]))
+            # Les parcours plus préférés par des étudiant que celui à qui il a été affecté
+            pref_des_etud[etud] = _get_avant(pref_etud[etud], parc)
 
-    print(pref_des_etud)
     for parc, pref_parc in enumerate(pref_des_parc):
-        pe = [pref_des_etud[etud] if etud in pref_parc else set() for etud in range(len(pref_etud))]
-        check = next((i for i, s in enumerate(pe) if parc in s), -1)
-        if check != -1:
-            print(check, parc)
+        # pref_parc : les étudiants préférés par le parcours parc
+        for etud in pref_parc:
+            if (parc in pref_des_etud[etud]):  # si l'étudiant aussi préfére le parcours parc -> instable
+                instables.add((parc, etud))
+
+    return instables
