@@ -1,6 +1,8 @@
-#import exemple  # Pour pouvoir utiliser les methodes de exemple.py
+# import exemple  # Pour pouvoir utiliser les methodes de exemple.py
 # Q1
-from gale_shapley import gale_shapley_etud, gale_shapley_parc
+from gale_shapley import gale_shapley_etud, gale_shapley_parc, get_instable
+from time import time
+
 
 def matriceCE(fichier: str) -> list:
     """
@@ -51,5 +53,8 @@ def matriceCP(fichier: str) -> list:
 if __name__ == '__main__':
     matCEtu = matriceCE("PrefEtu.txt")
     cap, matCParc = matriceCP("PrefSpe.txt")
-    print("Etudiant optimal : ",gale_shapley_etud(matCEtu, matCParc, cap))
-    print("Parcours optimal : ",gale_shapley_parc(matCEtu, matCParc, cap))
+
+    optim_etud = gale_shapley_etud(matCEtu, matCParc, cap)
+    optim_parc = gale_shapley_parc(matCEtu, matCParc, cap)
+    # print("Parcours optimal : ",gale_shapley_parc(matCEtu, matCParc, cap))
+    print(optim_etud, optim_parc, get_instable(matCEtu, matCParc, optim_etud), sep="\n")
