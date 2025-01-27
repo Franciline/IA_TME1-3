@@ -1,60 +1,17 @@
 # import exemple  # Pour pouvoir utiliser les methodes de exemple.py
 # Q1
-from gale_shapley import gale_shapley_etud, gale_shapley_parc, get_instable
-from time import time
-
-
-def matriceCE(fichier: str) -> list:
-    """
-    Matrice de préférences des étudiants pour les parcours à partir d'un fichier txt.
-
-    Parameters
-    ----------
-        fichier : fichier txt à lire
-    Returns
-    -------
-        list[list[int]] : matrice de taille nb étudiant x nb de parcours, une sous-liste list[i] représente
-                        les préférences de l'étudiant i par ordre croissant
-    """
-
-    monFichier = open(fichier, "r")     # Ouverture en lecture. Indentation par rapport a la ligne d'avant (<-> bloc).
-    contenu = monFichier.readlines()    # Contenu contient une liste de chainces de caracteres, chaque chaine correspond a une ligne
-    monFichier.close()  # Fermeture du fichier
-
-    nbEtu = int(contenu[0])
-    matrice = [[int(x) for x in contenu[i+1].split()[2:]] for i in range(nbEtu)]
-
-    return matrice
-
-
-def matriceCP(fichier: str) -> list:
-    """
-    Matrice de préférences des parcours pour les étudiants à partir d'un fichier txt.
-
-    Parameters
-    ----------
-        fichier : fichier txt à lire
-    Returns
-    -------
-        list[list[int]] : matrice de taille nb de parcours x nb étudiant, une sous-liste list[i] représente
-                        les préférences du parcours i par ordre croissant
-    """
-    monFichier = open(fichier, "r")     # Ouverture en lecture. Indentation par rapport a la ligne d'avant (<-> bloc).
-    contenu = monFichier.readlines()    # Contenu contient une liste de chainces de caracteres, chaque chaine correspond a une ligne
-    monFichier.close()  # Fermeture du fichier
-
-    nbParcours = len(contenu) - 2       # except deux premieres lignes
-    capacites = [int(cap) for cap in contenu[1][3:].split()]
-    matrice = [[int(x) for x in contenu[i+2].split()[2:]] for i in range(nbParcours)]
-
-    return capacites, matrice
+from gale_shapley import gale_shapley_etud, gale_shapley_parc
+from matrice_pref import matriceCE, matriceCP, genMatriceCE, genMatriceCP, genCapacite
 
 
 if __name__ == '__main__':
-    matCEtu = matriceCE("PrefEtu.txt")
+    matCE = matriceCE("PrefEtu.txt")
     cap, matCParc = matriceCP("PrefSpe.txt")
 
-    optim_etud = gale_shapley_etud(matCEtu, matCParc, cap)
+    optim_etud = gale_shapley_etud(matCE, matCParc, cap)
     optim_parc = gale_shapley_parc(matCEtu, matCParc, cap)
-    # print("Parcours optimal : ",gale_shapley_parc(matCEtu, matCParc, cap))
-    print(optim_etud, optim_parc, get_instable(matCEtu, matCParc, optim_etud), sep="\n")
+    print("Etudiant optimal : ", optim_etud)
+    print("Parcours optimal : ", optim_parc)
+    print("Paires instables :", get_instable(matCEtu, matCParc, optim_etud))
+    print("Matrice CE aléatoire :", genMatriceCE(5))
+    print("Matrice CP aléatoire :", genMatriceCP(5))
