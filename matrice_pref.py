@@ -57,7 +57,7 @@ def genMatriceCE(n: int)-> list:
         list[list[int]] : matrice de taille 9 x n, une sous-liste list[i] représente
                         les préférences de l'étudiant i par ordre croissant    
     """
-    # génération aléatoire des préférences
+    # génération aléatoire des préférences, passage par numpy pour shuffle
     matriceCE = np.array([[x for x in range(9)] for _ in range(n)])
     [np.random.shuffle(row) for row in matriceCE]
     
@@ -76,15 +76,16 @@ def genMatriceCP(n: int)-> list:
         list[list[int]] : matrice de taille 9 x n, une sous-liste list[i] représente
                         les préférences du parcours i par ordre croissant    
     """
-    # génération aléatoire des préférences
+    # génération aléatoire des préférences, passage par numpy pour shuffle
     matriceCP = np.array([[x for x in range(n)] for _ in range(9)])
     [np.random.shuffle(row) for row in matriceCP]
     
     return np.ndarray.tolist(matriceCP)
 
+
 def genCapacite(n: int)->list:
     """
-    Génère aléatoirement des capacités pour les 9 parcours tel que cela somme à n.
+    Génère aléatoirement des capacités de façon équilibré pour les 9 parcours telle que cela somme à n.
 
     Parameters
     ----------
@@ -95,7 +96,7 @@ def genCapacite(n: int)->list:
     """
     # répartition a peu près équilibré
     cap = [n // 9 for _ in range(9)]
-    for i in range(n % 9):
+    for _ in range(n % 9):
         cap[np.random.randint(0, 9)] += 1 # ajout à des parcours aléatoires
 
     return cap

@@ -1,26 +1,60 @@
 from gale_shapley import gale_shapley_etud, gale_shapley_parc
-from matrice_pref import matriceCE, matriceCP, genMatriceCE, genMatriceCP, genCapacite
+from matrice_pref import genMatriceCE, genMatriceCP, genCapacite
 import time
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Partie 2
+def plotting(x: list, y: list, xlabel: str, ylabel: str, title: str):
+    """
+    Affiche le graphe pour les valeurs x et y.
 
-if __name__ == '__main__':
-    # Temps de calcul
-    nb_test = 10
+    Parameters
+    ----------
+        x: liste des valeurs en abscisse 
+        y: liste des valeurs en ordonnée
+        xlabel: titre axe x
+        ylabel: titre axe y
+        title: titre du graphique
+    """
+
+    data = pd.DataFrame(list(zip(x, y)))
+    data.columns = [xlabel, ylabel]
+    sns.set_theme()
+    sns.lineplot(data=data, x=xlabel,y=ylabel).set_title(title)
+    plt.show()
+
+def test_calc(debut: int, fin: int, pas: int, nb: int):
+    """
+    Test le temps de calcul en moyenne sur n tests de la fonction Gale-Shapley pour le nombre 
+    d'étudiants variant de [debut, fin] avec un pas donné. Trace ensuite la courbe associée.
+
+    Parameters
+    ----------
+    debut: valeur de départ
+    fin: valeur de fin
+    pas: le pas 
+    nb: nombre de tests pour chaque itérations
+    """
     res = []
 
-    for n in range(200, 2200, 200):
-        matCE, matCP = genMatriceCE(n), genMatriceCP(n)
-        cap = genCapacite(n)
+    for nbEtu in range(debut, fin+1, pas):
+        matCE, matCP = genMatriceCE(nbEtu), genMatriceCP(nbEtu) # génération aléatoire des matrices de préférence
+        capacite = genCapacite(nbEtu) # génération de la capacité
 
-        # 10 tests minimum
-        sum_time = 0
+        temps = 0
 
-        for _ in range(nb_test):
+        for _ in range(nb):
             start = time.time()
-            gale_shapley_etud(matCE, matCP, cap)
-            sum_time += time.time() - start
+            _ = gale_shapley_parc(matCE, matCP, capacite) # ? which gale shapley side not precised
+            temps += time.time() - start
+        res.append(temps/nb)
+
+    x = [str(x) for x in range(debut, fin, pas)]
+
+    plotting(x, res, "n", "temps de calcul (sec)", "temps de calcul en fonction de n")
         
-        res.append(sum_time/nb_test)
-    print(res)
-        
+if __name__ == '__main__':
+    test_calc(200, 5000, 300, 10) # put in ipynb 
+    
