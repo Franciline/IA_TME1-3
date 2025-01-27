@@ -61,7 +61,7 @@ def genMatriceCE(n: int)-> list:
     matriceCE = np.array([[x for x in range(9)] for _ in range(n)])
     [np.random.shuffle(row) for row in matriceCE]
     
-    return matriceCE
+    return np.ndarray.tolist(matriceCE)
 
 
 def genMatriceCP(n: int)-> list:
@@ -80,7 +80,7 @@ def genMatriceCP(n: int)-> list:
     matriceCP = np.array([[x for x in range(n)] for _ in range(9)])
     [np.random.shuffle(row) for row in matriceCP]
     
-    return matriceCP
+    return np.ndarray.tolist(matriceCP)
 
 def genCapacite(n: int)->list:
     """

@@ -9,6 +9,6 @@ if __name__ == '__main__':
     cap, matCParc = matriceCP("PrefSpe.txt")
     print("Etudiant optimal : ",gale_shapley_etud(matCE, matCParc, cap))
     print("Parcours optimal : ",gale_shapley_parc(matCE, matCParc, cap))
-    #print("Matrice CE aléatoire :",genMatriceCE(5))
-    #print("Matrice CP aléatoire :",genMatriceCP(5))
+    print("Matrice CE aléatoire :",genMatriceCE(5))
+    print("Matrice CP aléatoire :",genMatriceCP(5))
     
