@@ -22,7 +22,17 @@ def plotting(x: list, y: list, xlabel: str, ylabel: str, title: str):
     data = pd.DataFrame(list(zip(x, y)))
     data.columns = [xlabel, ylabel]
     sns.set_theme()
-    sns.lineplot(data=data, x=xlabel,y=ylabel).set_title(title)
+    axes = sns.lineplot(data=data, x=xlabel,y=ylabel)
+    axes.set_title(title)
+
+    # affichage de certaines valeurs de x
+    for ind, label in enumerate(axes.get_xticklabels()):
+        if ind % 4 == 0:  
+            label.set_visible(True)
+        else:
+            label.set_visible(False)
+    print(label)
+    label.set_visible(True)
     plt.show()
 
 def test_calc(debut: int, fin: int, pas: int, nb: int):
@@ -47,14 +57,16 @@ def test_calc(debut: int, fin: int, pas: int, nb: int):
 
         for _ in range(nb):
             start = time.time()
-            _ = gale_shapley_parc(matCE, matCP, capacite) # ? which gale shapley side not precised
+            _ = gale_shapley_etud(matCE, matCP, capacite) # ? which gale shapley side not precised
             temps += time.time() - start
         res.append(temps/nb)
 
-    x = [str(x) for x in range(debut, fin, pas)]
+    x = [str(x) for x in range(debut, fin+1, pas)]
 
     plotting(x, res, "n", "temps de calcul (sec)", "temps de calcul en fonction de n")
         
+
 if __name__ == '__main__':
-    test_calc(200, 5000, 300, 10) # put in ipynb 
+    test_calc(200, 5000, 200, 10) # put in ipynb 
+
     
