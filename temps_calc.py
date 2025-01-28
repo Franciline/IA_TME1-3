@@ -4,6 +4,7 @@ import time
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from typing import Callable
 
 # Partie 2
 def plotting(x: list, y: list, xlabel: str, ylabel: str, title: str):
@@ -35,7 +36,7 @@ def plotting(x: list, y: list, xlabel: str, ylabel: str, title: str):
     label.set_visible(True)
     plt.show()
 
-def test_calc(debut: int, fin: int, pas: int, nb: int):
+def test_calc(debut: int, fin: int, pas: int, nb: int, gale_shapley: Callable):
     """
     Test le temps de calcul en moyenne sur n tests de la fonction Gale-Shapley pour le nombre 
     d'étudiants variant de [debut, fin] avec un pas donné. Trace ensuite la courbe associée.
@@ -57,7 +58,7 @@ def test_calc(debut: int, fin: int, pas: int, nb: int):
 
         for _ in range(nb):
             start = time.time()
-            _ = gale_shapley_etud(matCE, matCP, capacite) # ? which gale shapley side not precised
+            _ = gale_shapley(matCE, matCP, capacite) # ? which gale shapley side not precised
             temps += time.time() - start
         res.append(temps/nb)
 
@@ -67,6 +68,6 @@ def test_calc(debut: int, fin: int, pas: int, nb: int):
         
 
 if __name__ == '__main__':
-    test_calc(200, 5000, 200, 10) # put in ipynb 
+    test_calc(200, 5000, 200, 10, gale_shapley_etud) # put in ipynb 
 
     
