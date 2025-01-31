@@ -8,8 +8,8 @@ if __name__ == '__main__':
     matCE = matriceCE("PrefEtu.txt")
     cap, matCParc = matriceCP("PrefSpe.txt")
 
-    optim_etud = gale_shapley_etud(matCE, matCParc, cap)
-    optim_parc = gale_shapley_parc(matCE, matCParc, cap)
+    optim_etud, _ = gale_shapley_etud(matCE, matCParc, cap)
+    optim_parc, _ = gale_shapley_parc(matCE, matCParc, cap)
     print("Etudiant optimal : ", optim_etud)
     print("Parcours optimal : ", optim_parc)
     print("Paires instables :", get_instable(matCE, matCParc, optim_etud))

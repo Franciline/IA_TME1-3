@@ -25,7 +25,12 @@ def plotting(x: list, y: list, xlabel: str, ylabel: str, title: str):
     data = pd.DataFrame(list(zip(x, y)))
     data.columns = [xlabel, ylabel]
     sns.set_theme(font_scale=1.40)
-    axes = sns.lineplot(data=data, x=xlabel, y=ylabel)
+    axes = sns.lineplot(data=data, x=xlabel, y=ylabel, label="itérations")
+    # plot droite
+    axes = sns.lineplot(data=[(x/14000)**2 for x in range(200, 5001, 200)], c='gray', label="n²/1.4*10⁴")
+    axes.lines[1].set_linestyle("--")
+
+    axes.legend()
     axes.set_title(title, fontsize=20)
 
     # affichage de certaines valeurs de x
@@ -97,12 +102,14 @@ def plot_nb_iter(debut: int, fin: int, pas: int, gale_shapley: Callable):
     res = []
 
     for nbEtu in range(debut, fin+1, pas):
-        matCE, matCP = genMatriceCE(nbEtu), genMatriceCP(nbEtu)  # génération aléatoire des matrices de préférence
-        capacite = genCapacite(nbEtu)  # génération de la capacité
-
-        _, nb_iter = gale_shapley(matCE, matCP, capacite)
-        res.append(nb_iter)
-
+        sum = 0
+        for _ in range(10):
+            matCE, matCP = genMatriceCE(nbEtu), genMatriceCP(nbEtu)  # génération aléatoire des matrices de préférence
+            capacite = genCapacite(nbEtu)  # génération de la capacité
+            
+            _, nb_iter = gale_shapley(matCE, matCP, capacite) 
+            sum += nb_iter
+        res.append(sum/10)
     x = [str(x) for x in range(debut, fin+1, pas)]
 
     plotting(x, res, "nombre d'étudiants", "nombre d'itérations",
@@ -110,5 +117,5 @@ def plot_nb_iter(debut: int, fin: int, pas: int, gale_shapley: Callable):
 
 
 if __name__ == '__main__':
-    plot_temps(200, 5000, 200, 10, gale_shapley_parc)  # put in ipynb
-    # plot_nb_iter(200, 5000, 200, gale_shapley_parc)  # put in ipynb
+    plot_temps(200, 5000, 200, 10, gale_shapley_etud)  # put in ipynb
+    #plot_nb_iter(200, 5000, 200, gale_shapley_etud)  # put in ipynb

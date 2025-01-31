@@ -15,7 +15,7 @@ def gale_shapley_etud(pref_etud: list[list[int]], pref_parc: list[list[int]], ca
     -------
         list[list[int]] : Liste des affectations. Une sous-liste de l'indice i représente l'affectation des étudiants au parcours i.
     """
-
+    ite = 0
     # Les étudiants libres. Les éléments sont des tuples (indice du parcours suivant disponible pour le choix, id_étudiant) changed?
     # Utilisation comme le stack
     etud_libre = deque(range(len(pref_etud)), maxlen=len(pref_etud))  # 1er élément de la pile est étudiant n
@@ -58,7 +58,9 @@ def gale_shapley_etud(pref_etud: list[list[int]], pref_parc: list[list[int]], ca
         else:
             etud_libre.append(etudiant)  # retourne en tête de pile
 
-    return [[stud for _, stud in affect] for affect in parc_affect]
+        ite += 1
+
+    return [[stud for _, stud in affect] for affect in parc_affect], ite
 
 
 def gale_shapley_parc(pref_etud: list[list[int]], pref_parc: list[list[int]], capacites: list[int]) -> list[list[int]]:
@@ -74,6 +76,8 @@ def gale_shapley_parc(pref_etud: list[list[int]], pref_parc: list[list[int]], ca
     -------
         list[list[int]] : Liste des affectations. Une sous-liste de l'indice i représente l'affectation des étudiants au parcours i.
     """
+
+    ite = 0
     # pile des parcours libres, parcours avec capacité > 1 apparaissent plusieurs fois à la suite
     parc_libre = deque([y for y in range(len(capacites)) for _ in range(capacites[y])], maxlen=sum(capacites))
 
@@ -107,8 +111,8 @@ def gale_shapley_parc(pref_etud: list[list[int]], pref_parc: list[list[int]], ca
             etud_affect[etudiant] = [parcours, rang_parc]
         else:
             parc_libre.append(parcours)  # retourne en tête de pile
-
-    return [[numEt for numEt in range(len(etud_affect)) if etud_affect[numEt][0] == numParc] for numParc in range(len(pref_parc))]
+        ite += 1
+    return [[numEt for numEt in range(len(etud_affect)) if etud_affect[numEt][0] == numParc] for numParc in range(len(pref_parc))], ite
 
 
 def _get_avant(lst: list[int], val: int, exclus: set[int] = None) -> set[int]:
