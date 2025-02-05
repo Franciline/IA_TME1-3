@@ -3,39 +3,64 @@ from gurobipy import GRB
 import numpy as np
 from scipy.sparse import csr_array
 
-m = gp.Model("Ex3")
-
 nparcours, netudiants = 9, 11  # rows = parcours, column = etudiants
-
-parcours = np.arange(0, 10, 1, int)
-etudiants = np.arange(0, 11, 1, int)
+# Capacités des parcours
 caps = [2, 1, 1, 1, 1, 1, 1, 1, 2]
 
-data = [1] * 12
-rows = [0, 0, 2, 4, 5, 5, 5, 6, 6, 6, 7, 7]
-cols = [5, 7, 9, 10, 0, 1, 3, 0, 1, 3, 6, 7]
+# k = 3
+# parcours = {0: [5, 7],
+#             1: [],
+#             2: [9],
+#             3: [],
+#             4: [10],
+#             5: [0, 1, 3],
+#             6: [0, 1, 3],
+#             7: [6, 7],
+#             8: []}
 
-matrix = csr_array((data, (rows, cols)), shape=(nparcours, netudiants), dtype=int)
-x = m.addVars(nparcours, netudiants, vtype=GRB.BINARY, name="x")
+# # k = 8
+parcours = {0: [0, 1, 3, 4, 5, 7, 10],
+            1: [0, 1, 3, 4, 5, 7, 9, 10],
+            2: [0, 1, 3, 4, 5, 7, 9],
+            3: [0, 1, 3, 4, 5, 6, 7, 9],
+            4: [3, 4, 5, 7, 10],
+            5: [0, 1, 3, 4, 6],
+            6: [0, 1, 2, 3, 4, 5, 6, 7],
+            7: [0, 1, 3, 4, 5, 6, 7, 9],
+            8: [0, 1, 2, 3, 4, 5, 6, 7]}
 
-# Constraints on capacity
-m.addConstrs((gp.quicksum(x[i, j]
-              for j in range(netudiants) if matrix[i, j] > 0) <= caps[i] for i in range(nparcours) if (matrix[i].toarray() > 0).any()))
 
-# Constraints on max 1 master
-m.addConstrs((gp.quicksum(x[i, j] for i in range(nparcours)) <= 1 for j in range(netudiants)
-              if (matrix._getcol(j).toarray() > 0).any()))
+# Pour indiquer où poser des 1 dans la matrice creuse 'matrix'
+rows = [key for key in parcours.keys() for _ in range(len(parcours[key]))]
+cols = [stud for studs in parcours.values() for stud in studs]
 
-m.setObjective(gp.quicksum(x[i, j] * matrix[i, j] for i in range(nparcours)
-               for j in range(netudiants)), GRB.MAXIMIZE)
 
-for i in range(nparcours):
-    print(i, (matrix[i].toarray() > 0).any())
+# Matrice creuse définie de manière suivante : lignes = parcours (p), colonnes = étudiants (e)
+# matrix[p, e] = 1 si la paire (p, e) est possible, = 0 sinon
+matrix = csr_array(([1] * len(rows), (rows, cols)), shape=(nparcours, netudiants), dtype=int)
+
+m = gp.Model("Ex3")
+
+# Ajouter uniquement les contraintes nécessaires
+x = m.addVars(((p, s) for p in range(nparcours)
+              for s in range(netudiants) if matrix[p, s] > 0), vtype=GRB.BINARY, name="x")
+
+valid_parcours = {p for p, _ in x.keys()}
+valid_etudiants = {e for _, e in x.keys()}
+
+# Contraintes sur les capacités des parcours
+m.addConstrs((gp.quicksum(x[i, j] for j in parcours[i]) <= caps[i] for i in parcours.keys() if parcours[i]))
+
+# Contraintes que chaque étudiant doit être affecté à au plus 1 parcours
+m.addConstrs((gp.quicksum(x[p, j] for p in [p for (p, e) in x.keys() if e == j]) <= 1 for j in valid_etudiants))
+
+# Fonction objective : maximiser le nombre des étudiants affectés aux parcours
+m.setObjective(gp.quicksum(x[i, j] for (i, j) in x.keys() if matrix[i, j] > 0), GRB.MAXIMIZE)
 
 m.optimize()
 m.write("solution_k4.lp")
 print(m.status)
+
 for v in m.getVars():
     if v.X > 0:
         print(f"{v.VarName}={v.X}")
-# m.addConstr()
