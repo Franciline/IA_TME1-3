@@ -5,8 +5,10 @@ from matrice_pref import matrices_utilite
 
 NBPARCOURS, NBETUDIANTS = 9, 11
 
-caps, sorted_parc, sorted_etud, utility_mat = matrices_utilite("PrefEtu.txt", "PrefSpe.txt")
+folder = "preferences_data"
+caps, sorted_parc, sorted_etud, utility_mat = matrices_utilite(f"{folder}/PrefEtu.txt", f"{folder}/PrefSpe.txt")
 
+print(utility_mat)
 # Create a new model
 model = gp.Model('Q14')
 
@@ -18,18 +20,18 @@ model.addConstrs(gp.quicksum(x[i, j] for j in range(NBETUDIANTS)) == caps[i] for
 # Constraints on max 1 master
 model.addConstrs((gp.quicksum(x[i, j] for i in range(NBPARCOURS)) == 1 for j in range(NBETUDIANTS)))
 
-# objective 
+# objective
 model.setObjective(gp.quicksum(x[i, j] * utility_mat[i][j] for i in range(NBPARCOURS)
-              for j in range(NBETUDIANTS)), GRB.MAXIMIZE)
+                               for j in range(NBETUDIANTS)), GRB.MAXIMIZE)
 
 model.optimize()
-model.write("plne_q14.lp")
+model.write("plne/plne_q14.lp")
 print(model.status)
 
 
 print("\nVariables à 1")
 total_u_parc, total_u_etud = 0, 0
-min_et, min_parc = NBPARCOURS, NBETUDIANTS #seuil borda
+min_et, min_parc = NBPARCOURS, NBETUDIANTS  # seuil borda
 
 print("etud pref")
 for row in sorted_etud:
@@ -50,11 +52,11 @@ for v in model.getVars():
         index = list(map(int, v.VarName.strip('x[]').split(',')))
         p, e = index[0], index[1]
 
-        #set mean
+        # set mean
         total_u_parc += sorted_parc[p][e]
         total_u_etud += sorted_etud[e][p]
 
-        #set min
+        # set min
         if min_parc > sorted_parc[p][e]:
             min_parc = sorted_parc[p][e]
 

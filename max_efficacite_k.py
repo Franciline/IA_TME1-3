@@ -7,8 +7,9 @@ from matrice_pref import matriceCE, matrices_utilite
 NBPARCOURS, NBETUDIANTS = 9, 11
 k = 5
 
-util_etud = matriceCE("PrefEtu.txt")
-caps, sorted_parc, sorted_etud, utility_mat = matrices_utilite("PrefEtu.txt", "PrefSpe.txt")
+folder = "preferences_data"
+util_etud = matriceCE(f"{folder}/PrefEtu.txt")
+caps, sorted_parc, sorted_etud, utility_mat = matrices_utilite(f"{folder}/PrefEtu.txt", f"{folder}/PrefSpe.txt")
 
 # dictionnaire k chaque parcours on associe les étudiants qui l'ont en k premier
 dict_k = {x: [] for x in range(NBPARCOURS)}
@@ -42,7 +43,7 @@ m.addConstrs((gp.quicksum(x[p, j] for p in [p for (p, e) in x.keys() if e == j])
 m.setObjective(gp.quicksum(x[i, j]*utility_mat[i][j] for (i, j) in x.keys() if matrix[i, j] > 0), GRB.MAXIMIZE)
 
 m.optimize()
-m.write("plne_q15.lp")
+m.write("plne/plne_q15.lp")
 print(m.status)
 
 total_u_parc, total_u_etud = 0, 0
