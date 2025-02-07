@@ -1,4 +1,5 @@
 import numpy as np
+from typing import Tuple
 
 def matriceCE(fichier: str) -> list:
     """
@@ -21,7 +22,6 @@ def matriceCE(fichier: str) -> list:
     matrice = [[int(x) for x in contenu[i+1].split()[2:]] for i in range(nbEtu)]
 
     return matrice
-
 
 def matriceCP(fichier: str) -> list:
     """
@@ -100,3 +100,37 @@ def genCapacite(n: int)->list:
         cap[np.random.randint(0, 9)] += 1 # ajout à des parcours aléatoires
 
     return cap
+
+
+def matrices_utilite(fichierCE: str, fichierCP: str) -> Tuple[list, list, list, list]:
+    """
+    Renvoie la matrice des utilités pour les étudiants, pour les parcours
+    et la somme correspondante de ces deux matrices
+
+    Parameters
+    -----------
+        fichierCE: nom du fichier contenant les préférences des étudiants (row etudiant, col parcours)
+        fichierCCP: nom du fichier contenant les préférences des parcours (row parcours, col étudiants)
+
+    Returns
+    -------
+    caps: capacité des parcours
+    score_parc: matrice des utilités des étudiants
+    sorted_etud: matrice des utilités des parcours
+    utility_mat: matrice = score_parc + sorted_etud.T
+    """
+    util_etud = matriceCE(fichierCE)    
+    caps, util_parc = matriceCP(fichierCP)    
+
+    # on associe à chaque parcours leur score borda: pour chaque elements x_pe = [num_parc/etud, score borda]
+    # tri en fonction des numéros d'étudiants -> sorted_parc[3][0] = score borda de etud 0 pour parc 3 
+    sorted_parc = [sorted([[row[i], len(row) - i - 1] for i in range(len(row))], key=lambda x: x[0]) for row in util_parc]
+    sorted_etud = [sorted([[row[i], len(row) - i - 1] for i in range(len(row))], key=lambda x: x[0]) for row in util_etud]
+    
+    # garder le score uniquement : [num_parc/etud, score borda] -> [score borda]
+    sorted_parc = [[row[i][1] for i in range(len(row))] for row in sorted_parc]
+    sorted_etud = [[row[i][1] for i in range(len(row))] for row in sorted_etud]
+
+    utility_mat = list(np.array(sorted_parc) + np.array(sorted_etud).T) # matrice d'utilité
+
+    return caps, sorted_parc, sorted_etud, utility_mat
