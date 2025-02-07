@@ -19,15 +19,25 @@ caps = [2, 1, 1, 1, 1, 1, 1, 1, 2]
 #             8: []}
 
 # # k = 8
-parcours = {0: [0, 1, 3, 4, 5, 7, 10],
-            1: [0, 1, 3, 4, 5, 7, 9, 10],
-            2: [0, 1, 3, 4, 5, 7, 9],
-            3: [0, 1, 3, 4, 5, 6, 7, 9],
-            4: [3, 4, 5, 7, 10],
-            5: [0, 1, 3, 4, 6],
-            6: [0, 1, 2, 3, 4, 5, 6, 7],
-            7: [0, 1, 3, 4, 5, 6, 7, 9],
-            8: [0, 1, 2, 3, 4, 5, 6, 7]}
+# parcours = {0: [0, 1, 3, 4, 5, 7, 10],
+#             1: [0, 1, 3, 4, 5, 7, 9, 10],
+#             2: [0, 1, 3, 4, 5, 7, 9],
+#             3: [0, 1, 3, 4, 5, 6, 7, 9],
+#             4: [3, 4, 5, 7, 10],
+#             5: [0, 1, 3, 4, 6],
+#             6: [0, 1, 2, 3, 4, 5, 6, 7],
+#             7: [0, 1, 3, 4, 5, 6, 7, 9],
+#             8: [0, 1, 2, 3, 4, 5, 6, 7]}
+
+parcours = {0: [1, 2, 3, 4, 5, 7, 10],
+1: [4],
+2: [2, 5, 6, 7, 8, 9],
+3: [0, 9, 10],
+4: [1, 2, 5, 7, 10],
+5: [0, 1, 3, 4, 6, 8, 9],
+6: [0, 1, 3, 4, 6, 8, 9, 10],
+7: [0, 1, 2, 3, 4, 5, 6, 7, 8],
+8: [0, 2, 3, 5, 6, 7, 8, 9, 10]}
 
 
 # Pour indiquer où poser des 1 dans la matrice creuse 'matrix'
@@ -55,7 +65,7 @@ m.addConstrs((gp.quicksum(x[i, j] for j in parcours[i]) <= caps[i] for i in parc
 m.addConstrs((gp.quicksum(x[p, j] for p in [p for (p, e) in x.keys() if e == j]) <= 1 for j in valid_etudiants))
 
 # Fonction objective : maximiser le nombre des étudiants affectés aux parcours
-m.setObjective(gp.quicksum(x[i, j] for (i, j) in x.keys() if matrix[i, j] > 0), GRB.MAXIMIZE)
+m.setObjective(gp.quicksum(x[i, j] for (i, j) in x.keys()), GRB.MAXIMIZE)
 
 m.optimize()
 m.write("solution_k4.lp")
