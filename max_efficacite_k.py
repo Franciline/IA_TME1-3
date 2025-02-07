@@ -4,6 +4,8 @@ import numpy as np
 from scipy.sparse import csr_array
 from matrice_pref import matriceCE, matrices_utilite
 
+# Q15 maximiser les utilités avec chaque étudiant ayant un de ses k ∗ premiers choix
+
 NBPARCOURS, NBETUDIANTS = 9, 11
 k = 5
 
@@ -49,9 +51,7 @@ print(m.status)
 total_u_parc, total_u_etud = 0, 0
 min_et, min_parc = NBPARCOURS, NBETUDIANTS  # seuil borda
 
-for k, v in dict_k.items():
-    print(k, v)
-
+print("\nVariables x_pe à 1, utilité parcours, utilité étudiant, utilité totale\n")
 for v in m.getVars():
     if v.X > 0:
         index = list(map(int, v.VarName.strip('x[]').split(',')))

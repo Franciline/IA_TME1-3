@@ -8,7 +8,7 @@ nparcours, netudiants = 9, 11  # rows = parcours, column = etudiants
 caps = [2, 1, 1, 1, 1, 1, 1, 1, 2]
 
 # Dans dict : key = parcours, liste : les étudiants qui ont ce parcours dans ces k premiers choix
-# k = 3. sans pref de parcours
+# k = 3. sans pref des parcours
 # parcours = {0: [1, 2, 5, 7, 10],
 #             1: [4],
 #             2: [9],
@@ -19,7 +19,7 @@ caps = [2, 1, 1, 1, 1, 1, 1, 1, 2]
 #             7: [0, 2, 3, 4, 5, 6, 7, 8],
 #             8: []}
 
-# k = 4. sans pref de parcours
+# k = 4. sans pref des parcours
 # parcours = {0: [1, 2, 5, 7, 10, 3],
 #             1: [4],
 #             2: [9, 2, 5, 6, 7, 8],
@@ -30,7 +30,7 @@ caps = [2, 1, 1, 1, 1, 1, 1, 1, 2]
 #             7: [0, 2, 3, 4, 5, 6, 7, 8],
 #             8: [0, 9, 10]}
 
-# k = 5 sans pref de parcours
+# k = 5 sans pref des parcours
 parcours = {0: [1, 2, 3, 5, 7, 10, 4],
             1: [4],
             2: [2, 5, 6, 7, 8, 9],
@@ -41,7 +41,7 @@ parcours = {0: [1, 2, 3, 5, 7, 10, 4],
             7: [0, 2, 3, 4, 5, 6, 7, 8, 1],
             8: [0, 9, 10, 2, 3, 5, 6, 7, 8]}
 
-# k = 3. avec pref de parcours
+# k = 3. avec pref des parcours
 # parcours = {0: [5, 7],
 #             1: [],
 #             2: [9],

@@ -8,7 +8,8 @@ def matriceCE(fichier: str) -> list:
 
     Parameters
     ----------
-        fichier : fichier txt à lire
+        fichier : fichier.txt à lire
+
     Returns
     -------
         list[list[int]] : matrice de taille nb étudiant x nb de parcours, une sous-liste list[i] représente
@@ -17,7 +18,7 @@ def matriceCE(fichier: str) -> list:
 
     monFichier = open(fichier, "r")     # Ouverture en lecture. Indentation par rapport a la ligne d'avant (<-> bloc).
     contenu = monFichier.readlines()    # Contenu contient une liste de chainces de caracteres, chaque chaine correspond a une ligne
-    monFichier.close()  # Fermeture du fichier
+    monFichier.close()                  # Fermeture du fichier
 
     nbEtu = int(contenu[0])
     matrice = [[int(x) for x in contenu[i+1].split()[2:]] for i in range(nbEtu)]
@@ -32,6 +33,7 @@ def matriceCP(fichier: str) -> list:
     Parameters
     ----------
         fichier : fichier txt à lire
+
     Returns
     -------
         list[list[int]] : matrice de taille nb de parcours x nb étudiant, une sous-liste list[i] représente
@@ -39,10 +41,10 @@ def matriceCP(fichier: str) -> list:
     """
     monFichier = open(fichier, "r")     # Ouverture en lecture. Indentation par rapport a la ligne d'avant (<-> bloc).
     contenu = monFichier.readlines()    # Contenu contient une liste de chainces de caracteres, chaque chaine correspond a une ligne
-    monFichier.close()  # Fermeture du fichier
+    monFichier.close()                  # Fermeture du fichier
 
     nbParcours = len(contenu) - 2       # except deux premieres lignes
-    capacites = [int(cap) for cap in contenu[1][3:].split()]
+    capacites = [int(cap) for cap in contenu[1][3:].split()] 
     matrice = [[int(x) for x in contenu[i+2].split()[2:]] for i in range(nbParcours)]
 
     return capacites, matrice
@@ -55,6 +57,7 @@ def genMatriceCE(n: int) -> list:
     Parameters
     ----------
         n: le nombre d'étudiants
+        
     Returns
     -------
         list[list[int]] : matrice de taille 9 x n, une sous-liste list[i] représente

@@ -6,8 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from typing import Callable
 
-# Partie 2
-
+# Partie 2 affichage des courbes
 
 def plotting(x: list, y: list, xlabel: str, ylabel: str, title: str):
     """
@@ -117,5 +116,5 @@ def plot_nb_iter(debut: int, fin: int, pas: int, gale_shapley: Callable):
 
 
 if __name__ == '__main__':
-    plot_temps(200, 5000, 200, 10, gale_shapley_etud)  # put in ipynb
-    #plot_nb_iter(200, 5000, 200, gale_shapley_etud)  # put in ipynb
+    plot_temps(200, 5000, 200, 10, gale_shapley_etud) 
+    plot_nb_iter(200, 5000, 200, gale_shapley_etud) 

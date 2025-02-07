@@ -3,12 +3,13 @@ from gurobipy import GRB
 import numpy as np
 from matrice_pref import matrices_utilite
 
+# Q14 maximiser les utilités
+
 NBPARCOURS, NBETUDIANTS = 9, 11
 
 folder = "preferences_data"
 caps, sorted_parc, sorted_etud, utility_mat = matrices_utilite(f"{folder}/PrefEtu.txt", f"{folder}/PrefSpe.txt")
 
-print(utility_mat)
 # Create a new model
 model = gp.Model('Q14')
 
@@ -29,23 +30,9 @@ model.write("plne/plne_q14.lp")
 print(model.status)
 
 
-print("\nVariables à 1")
+print("\nVariables x_pe à 1, utilité parcours, utilité étudiant, utilité totale\n")
 total_u_parc, total_u_etud = 0, 0
 min_et, min_parc = NBPARCOURS, NBETUDIANTS  # seuil borda
-
-print("etud pref")
-for row in sorted_etud:
-    print(row)
-print("\n")
-print("parc pref")
-for row in sorted_parc:
-    print(row)
-print("\n")
-print("tot parc pref")
-for row in utility_mat:
-    print(row)
-print("\n")
-
 
 for v in model.getVars():
     if v.X > 0:
