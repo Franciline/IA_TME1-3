@@ -1,6 +1,7 @@
 import numpy as np
 from typing import Tuple
 
+
 def matriceCE(fichier: str) -> list:
     """
     Matrice de préférences des étudiants pour les parcours à partir d'un fichier txt.
@@ -22,6 +23,7 @@ def matriceCE(fichier: str) -> list:
     matrice = [[int(x) for x in contenu[i+1].split()[2:]] for i in range(nbEtu)]
 
     return matrice
+
 
 def matriceCP(fichier: str) -> list:
     """
@@ -45,7 +47,8 @@ def matriceCP(fichier: str) -> list:
 
     return capacites, matrice
 
-def genMatriceCE(n: int)-> list:
+
+def genMatriceCE(n: int) -> list:
     """
     Génère aléatoirement la matrice de préférences des n étudiants pour les 9 parcours.
 
@@ -60,11 +63,11 @@ def genMatriceCE(n: int)-> list:
     # génération aléatoire des préférences, passage par numpy pour shuffle
     matriceCE = np.array([[x for x in range(9)] for _ in range(n)])
     [np.random.shuffle(row) for row in matriceCE]
-    
+
     return np.ndarray.tolist(matriceCE)
 
 
-def genMatriceCP(n: int)-> list:
+def genMatriceCP(n: int) -> list:
     """
     Génère aléatoirement la matrice de préférences des 9 parcours pour les n étudiants.
 
@@ -79,11 +82,11 @@ def genMatriceCP(n: int)-> list:
     # génération aléatoire des préférences, passage par numpy pour shuffle
     matriceCP = np.array([[x for x in range(n)] for _ in range(9)])
     [np.random.shuffle(row) for row in matriceCP]
-    
+
     return np.ndarray.tolist(matriceCP)
 
 
-def genCapacite(n: int)->list:
+def genCapacite(n: int) -> list:
     """
     Génère aléatoirement des capacités de façon équilibré pour les 9 parcours telle que cela somme à n.
 
@@ -97,7 +100,7 @@ def genCapacite(n: int)->list:
     # répartition a peu près équilibré
     cap = [n // 9 for _ in range(9)]
     for _ in range(n % 9):
-        cap[np.random.randint(0, 9)] += 1 # ajout à des parcours aléatoires
+        cap[np.random.randint(0, 9)] += 1  # ajout à des parcours aléatoires
 
     return cap
 
@@ -114,23 +117,26 @@ def matrices_utilite(fichierCE: str, fichierCP: str) -> Tuple[list, list, list, 
 
     Returns
     -------
-    caps: capacité des parcours
-    score_parc: matrice des utilités des étudiants
-    sorted_etud: matrice des utilités des parcours
-    utility_mat: matrice = score_parc + sorted_etud.T
+        caps: capacité des parcours
+        score_parc: matrice des utilités des étudiants
+        sorted_etud: matrice des utilités des parcours
+        utility_mat: matrice = score_parc + sorted_etud.T
     """
-    util_etud = matriceCE(fichierCE)    
-    caps, util_parc = matriceCP(fichierCP)    
+
+    util_etud = matriceCE(fichierCE)
+    caps, util_parc = matriceCP(fichierCP)
 
     # on associe à chaque parcours leur score borda: pour chaque elements x_pe = [num_parc/etud, score borda]
-    # tri en fonction des numéros d'étudiants -> sorted_parc[3][0] = score borda de etud 0 pour parc 3 
-    sorted_parc = [sorted([[row[i], len(row) - i - 1] for i in range(len(row))], key=lambda x: x[0]) for row in util_parc]
-    sorted_etud = [sorted([[row[i], len(row) - i - 1] for i in range(len(row))], key=lambda x: x[0]) for row in util_etud]
-    
+    # tri en fonction des numéros d'étudiants -> sorted_parc[3][0] = score borda de etud 0 pour parc 3
+    sorted_parc = [sorted([[row[i], len(row) - i - 1] for i in range(len(row))], key=lambda x: x[0])
+                   for row in util_parc]
+    sorted_etud = [sorted([[row[i], len(row) - i - 1] for i in range(len(row))], key=lambda x: x[0])
+                   for row in util_etud]
+
     # garder le score uniquement : [num_parc/etud, score borda] -> [score borda]
     sorted_parc = [[row[i][1] for i in range(len(row))] for row in sorted_parc]
     sorted_etud = [[row[i][1] for i in range(len(row))] for row in sorted_etud]
 
-    utility_mat = list(np.array(sorted_parc) + np.array(sorted_etud).T) # matrice d'utilité
+    utility_mat = list(np.array(sorted_parc) + np.array(sorted_etud).T)  # matrice d'utilité
 
     return caps, sorted_parc, sorted_etud, utility_mat
